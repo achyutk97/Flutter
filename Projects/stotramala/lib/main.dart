@@ -1,11 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'package:stotram/data/data.dart' as input;
-import 'package:flutter/services.dart' show rootBundle;
+
 import 'package:stotram/models/first_model.dart';
 
 import 'models/second_model.dart';
