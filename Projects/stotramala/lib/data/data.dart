@@ -6,7 +6,7 @@ import 'dart:convert';
 // Function to load and parse JSON
 Future<Map<String, dynamic>> loadJsonData() async {
   // Load JSON file as String
-  String jsonString = await rootBundle.loadString('assets/json/data.json');
+  String jsonString = await rootBundle.loadString('assets/json/data1.json');
 
   // Parse JSON string
   Map<String, dynamic> data = jsonDecode(jsonString);
@@ -20,22 +20,25 @@ Future<List<FirstModel>> readJson() async {
   Map<String, dynamic> jsonData = await loadJsonData();
   // print(jsonData['mainCategories'][0]['name']);
 
-  for (var firstModel in jsonData['mainCategories']) {
+  for (Map<String, dynamic> firstModel in jsonData['mainCategories']) {
     List<SecondModel> secondModelList = [];
-
-    for (var secondModel in firstModel['subCategories']) {
-      var secondModelData = SecondModel(
-          name: secondModel['name'],
-          author: secondModel['author'],
-          description: secondModel['description']);
-      secondModelList.add(secondModelData);
+    print(firstModel.keys);
+    for (var i in firstModel.keys) {
+      for (var secondModel in firstModel[i]['subCategories']) {
+        print(secondModel);
+        var secondModelData = SecondModel(
+            name: secondModel['name'],
+            author: secondModel['author'],
+            description: secondModel['description']);
+        secondModelList.add(secondModelData);
+      }
+      var value1 = FirstModel(
+        name: firstModel[i]['name'],
+        imgLink: firstModel[i]['imgLink'],
+        secondModels: secondModelList,
+      );
+      data.add(value1);
     }
-    var value1 = FirstModel(
-      name: firstModel['name'],
-      imgLink: firstModel['imgLink'],
-      secondModels: secondModelList,
-    );
-    data.add(value1);
   }
 
 //   final List<FirstModel> data = [

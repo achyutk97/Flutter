@@ -7,7 +7,6 @@ import 'package:stotram/data/data.dart' as input;
 import 'package:stotram/models/first_model.dart';
 
 import 'models/second_model.dart';
-
 // Define the first model
 
 // Define the second model
@@ -55,7 +54,9 @@ class _MyAppState extends State<MyApp> {
           builder:
               (BuildContext context, AsyncSnapshot<List<FirstModel>> snapshot) {
             if (snapshot.data == []) {
-              return CircularProgressIndicator();
+              return const CircularProgressIndicator(
+                color: Colors.red,
+              );
             } else {
               List<FirstModel> nonNullableList1 = snapshot.data ?? [];
               return GridView1(nonNullableList1);
@@ -82,8 +83,10 @@ class _MyAppState extends State<MyApp> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) =>
-                    SecondModelPage(secondModels: data[index].secondModels),
+                builder: (context) => SecondModelPage(
+                  secondModels: data[index].secondModels,
+                  title: data[index].name,
+                ),
               ),
             );
           },
@@ -98,7 +101,7 @@ class _MyAppState extends State<MyApp> {
                 children: [
                   Expanded(
                     child: Image.asset(
-                      data[index].imgLink,
+                      "assets/images/${data[index].imgLink}",
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -107,8 +110,9 @@ class _MyAppState extends State<MyApp> {
                     child: Text(
                       data[index].name,
                       style: const TextStyle(
-                          fontSize: 20, fontWeight: FontWeight.bold),
+                          fontSize: 16, fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
+                      maxLines: 1,
                     ),
                   ),
                 ],
@@ -122,15 +126,17 @@ class _MyAppState extends State<MyApp> {
 }
 
 class SecondModelPage extends StatelessWidget {
+  final String title;
   final List<SecondModel> secondModels;
 
-  const SecondModelPage({super.key, required this.secondModels});
+  const SecondModelPage(
+      {super.key, required this.secondModels, required this.title});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Second Model Details'),
+        title: Text(title),
       ),
       body: ListView.builder(
         itemCount: secondModels.length,
@@ -186,42 +192,36 @@ class _DetailPageState extends State<DetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Detail Page'),
+        title: Text(
+          widget.title,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Center(
               child: Text(
-                '${widget.title}',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-            ),
-            SizedBox(height: 10),
-            Center(
-              child: Text(
                 '${widget.author}',
-                style: const TextStyle(fontSize: 20),
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
               ),
             ),
             const SizedBox(height: 10),
             Expanded(
-              child: Center(
-                child: Card(
-                  color: Colors.orangeAccent,
-                  child: AspectRatio(
-                    aspectRatio: 16 / 9,
-                    child: SingleChildScrollView(
-                      child: Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(18.0),
-                          child: Text(
-                            widget.description,
-                            style: TextStyle(fontSize: _fontSize),
-                          ),
-                        ),
+              child: Card(
+                color: Colors.orangeAccent,
+                child: SingleChildScrollView(
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child: Text(
+                        widget.description,
+                        style: TextStyle(fontSize: _fontSize),
                       ),
                     ),
                   ),
