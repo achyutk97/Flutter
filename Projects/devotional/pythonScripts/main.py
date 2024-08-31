@@ -3,7 +3,7 @@ import json
 
 def readingTheJsonData():
     myDict = {}
-    with open(r"assets\json\data1.json", encoding="utf-8") as fd:
+    with open(r"assets/json/data1.json", encoding="utf-8") as fd:
         data = fd.read()
         if data != "":
             # print(data, "here")

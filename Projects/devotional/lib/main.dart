@@ -217,14 +217,15 @@ class _DetailPageState extends State<DetailPage> {
             const SizedBox(height: 10),
             Expanded(
               child: Card(
-                color: Colors.orangeAccent,
+                color: Color.fromARGB(207, 0, 120, 212),
                 child: SingleChildScrollView(
                   child: Center(
                     child: Padding(
                       padding: const EdgeInsets.all(18.0),
                       child: Text(
                         widget.description,
-                        style: TextStyle(fontSize: _fontSize),
+                        style:
+                            TextStyle(fontSize: _fontSize, color: Colors.white),
                       ),
                     ),
                   ),
