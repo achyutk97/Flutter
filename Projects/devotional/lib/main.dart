@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:stotram/data/data.dart' as input;
 
 import 'package:stotram/models/first_model.dart';
+import 'package:stotram/views/japamala.dart';
 
 import 'models/second_model.dart';
 
@@ -15,7 +16,12 @@ import 'dart:io' show Platform;
 
 void main() {
   // Load JSON data
-  runApp(MyApp());
+  runApp(MaterialApp(
+      title: 'Ghranth',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: MyApp()));
 }
 
 class MyApp extends StatefulWidget {
@@ -24,48 +30,51 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // Sample data
-
-  // List<FirstModel> data = [];
-  // Future<List<FirstModel>> fetchValues() async {
-  //   data = await input.readJson();
-  //   return data;
-  // }
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    // fetchValues();
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Ghranth'),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Icon(Icons.more_vert),
+          )
+        ],
+        backgroundColor: const Color.fromARGB(255, 243, 237, 237),
       ),
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Stotramala'),
-        ),
-        body: FutureBuilder<List<FirstModel>>(
-          future: input.readJson(),
-          builder:
-              (BuildContext context, AsyncSnapshot<List<FirstModel>> snapshot) {
-            if (snapshot.data == []) {
-              return const CircularProgressIndicator(
-                color: Colors.red,
-              );
-            } else {
-              List<FirstModel> nonNullableList1 = snapshot.data ?? [];
-              return GridView1(nonNullableList1);
-            }
-          },
-        ),
+      body: FutureBuilder<List<FirstModel>>(
+        future: input.readJson(),
+        builder:
+            (BuildContext context, AsyncSnapshot<List<FirstModel>> snapshot) {
+          if (snapshot.data == []) {
+            return const CircularProgressIndicator(
+              color: Colors.red,
+            );
+          } else {
+            List<FirstModel> nonNullableList1 = snapshot.data ?? [];
+            return GridView1(nonNullableList1);
+          }
+        },
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          // print('Extended FAB Pressed');
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Japamala()),
+          );
+        },
+        icon: Icon(Icons.add),
+        label: Text('Japamala'),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 
