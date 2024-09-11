@@ -112,9 +112,12 @@ class _MyAppState extends State<MyApp> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Expanded(
-                    child: Image.asset(
-                      "assets/images/${data[index].imgLink}",
-                      fit: BoxFit.cover,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(15),
+                      child: Image.asset(
+                        "assets/images/${data[index].imgLink}",
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                   Padding(
