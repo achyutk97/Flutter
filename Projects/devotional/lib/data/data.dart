@@ -6,7 +6,7 @@ import 'dart:convert';
 // Function to load and parse JSON
 Future<Map<String, dynamic>> loadJsonData() async {
   // Load JSON file as String
-  String jsonString = await rootBundle.loadString('assets/json/data1.json');
+  String jsonString = await rootBundle.loadString('assets/json/Main.json');
 
   // Parse JSON string
   Map<String, dynamic> data = jsonDecode(jsonString);
@@ -14,13 +14,14 @@ Future<Map<String, dynamic>> loadJsonData() async {
   return data;
 }
 
-Future<List<FirstModel>> readJson() async {
+Future<List<FirstModel>> readJson(String lang) async {
+  print(lang);
   List<FirstModel> data = [];
   // Load JSON data
   Map<String, dynamic> jsonData = await loadJsonData();
   // print(jsonData['mainCategories'][0]['name']);
 
-  for (Map<String, dynamic> firstModel in jsonData['mainCategories']) {
+  for (Map<String, dynamic> firstModel in jsonData[lang]['mainCategories']) {
     List<SecondModel> secondModelList = [];
 
     for (var i in firstModel.keys) {

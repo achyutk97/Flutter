@@ -1,21 +1,50 @@
 import flet as ft
 import json
+import sys
+import os
 
+# Json Combiner
+def jsonCombiner():
+    # Initialize an empty dictionary to hold the merged data
+    merged_data = {}
+    PATH = "./assets/json/LangFiles/"
+    # Get the list of all files in the current directory
+    json_files = [f for f in os.listdir(PATH) if f.endswith('.json')]
+
+    # Loop through each JSON file and merge the data
+    for json_file in json_files:
+        with open(PATH + json_file, 'r', encoding="utf-8") as f:
+            data = json.load(f)
+            key = json_file.split(".")[0]
+            # Merge the contents into the merged_data dictionary
+            # Assuming each file has a dictionary structure
+            merged_data[key] = {
+
+            }
+            merged_data[key].update(data)
+
+    # Save the merged data into a new JSON file
+    with open('./assets/json/merged_file1.json', 'w', encoding="utf-8") as mf:
+        json.dump(merged_data, mf, ensure_ascii=False, indent=4)
+
+    print(f"Successfully merged {len(json_files)} JSON files into 'merged_file.json'")
+
+contentLang = sys.argv[1]
 def readingTheJsonData():
     myDict = {}
-    with open(r"assets/json/data1.json", encoding="utf-8") as fd:
+    with open(fr"assets/json/LangFiles/{contentLang}.json", encoding="utf-8") as fd:
         data = fd.read()
         if data != "":
-            # print(data, "here")
             myDict = json.loads(data)
         else:
             myDict['mainCategories'] = []
     return myDict
 
 def saveToJsonFile(data):
-     with open(r"assets\json\data1.json", "w", encoding="utf-8") as fd:
+    with open(fr"assets\json\LangFiles/{contentLang}.json", "w", encoding="utf-8") as fd:
         myDict = json.dumps(data, ensure_ascii=False, indent=4)
         fd.write(myDict)
+    jsonCombiner()
 
 
 def MyPage(page1: ft.Page):
@@ -246,5 +275,8 @@ def MyPage(page1: ft.Page):
 
 def main(Page):
     MyPage(Page)
-    
-ft.app(target=main)
+
+
+
+jsonCombiner()
+# ft.app(target=main)

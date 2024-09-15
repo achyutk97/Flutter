@@ -1,5 +1,91 @@
 {
-    "mainCategories": [
+    "Marathi":{
+        "mainCategories": [
+        {
+            "Raghavendra Tirtharu": {
+                "id": 1,
+                "name": "Raghavendra Tirtharu",
+                "imgLink": "1.jpg",
+                "subCategories": [
+                ]
+            }
+        },
+        {
+            "Lord Rama": {
+                "id": 2,
+                "name": "Shree Rama",
+                "imgLink": "2.jpg",
+                "subCategories": [
+                ]
+            }
+        },
+        {
+            "Hanuman": {
+                "id": 3,
+                "name": "Hanuman",
+                "imgLink": "3.jpg",
+                "subCategories": [
+                ]
+            }
+        },
+        {
+            "Mahadev": {
+                "id": 4,
+                "name": "Mahadev",
+                "imgLink": "4.jpg",
+                "subCategories": [
+                ]
+            }
+        },
+        {
+            "Ganesh": {
+                "id": 5,
+                "name": "Ganesh",
+                "imgLink": "5.jpg",
+                "subCategories": [
+                ]
+            }
+        },
+        {
+            "Shree Bhakka Prabhu": {
+                "id": 6,
+                "name": "Shree Bhakka Prabhu",
+                "imgLink": "6.jpg",
+                "subCategories": [
+                ]
+            }
+        },
+        {
+            "Sri Guru Datta": {
+                "id": 8,
+                "name": "Shree Guru Datta",
+                "imgLink": "8.jpg",
+                "subCategories": [
+                ]
+            }
+        },
+        {
+            "Krishna": {
+                "id": 9,
+                "name": "Krishna",
+                "imgLink": "9.jpg",
+                "subCategories": [
+                ]
+            }
+        },
+        {
+            "Laxmi": {
+                "id": 10,
+                "name": "Laxmi",
+                "imgLink": "14.jpg",
+                "subCategories": [
+                ]
+            }
+        }
+    ]
+    },
+    "Kannada":{
+        "mainCategories": [
         {
             "Raghavendra Tirtharu": {
                 "id": 1,
@@ -231,4 +317,7 @@
             }
         }
     ]
+    }
+
+    
 }

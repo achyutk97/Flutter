@@ -30,6 +30,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  static String contentLang = "Kannada";
   @override
   void initState() {
     // TODO: implement initState
@@ -42,15 +43,31 @@ class _MyAppState extends State<MyApp> {
       appBar: AppBar(
         title: const Text('Ghranth'),
         actions: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Icon(Icons.more_vert),
-          )
+          PopupMenuButton<String>(
+            onSelected: (String result) {
+              print("Selected: $result");
+              // Handle the selected option
+              setState(() {
+                contentLang = result;
+              });
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              const PopupMenuItem<String>(
+                value: 'Marathi',
+                child: Text('Marathi'),
+              ),
+              const PopupMenuItem<String>(
+                value: 'Kannada',
+                child: Text('Kannada'),
+              ),
+            ],
+            icon: Icon(Icons.more_vert),
+          ) // vertical dots icon
         ],
         backgroundColor: const Color.fromARGB(255, 243, 237, 237),
       ),
       body: FutureBuilder<List<FirstModel>>(
-        future: input.readJson(),
+        future: input.readJson(contentLang),
         builder:
             (BuildContext context, AsyncSnapshot<List<FirstModel>> snapshot) {
           if (snapshot.data == []) {
