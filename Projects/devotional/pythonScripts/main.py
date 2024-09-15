@@ -278,5 +278,5 @@ def main(Page):
 
 
 
-jsonCombiner()
-# ft.app(target=main)
+# jsonCombiner()
+ft.app(target=main)
