@@ -18,9 +18,9 @@ void main() {
   // Load JSON data
   runApp(MaterialApp(
       title: 'Ghranth',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      themeMode: ThemeMode.system,
       home: MyApp()));
 }
 
@@ -65,7 +65,7 @@ class _MyAppState extends State<MyApp> {
             icon: Icon(Icons.more_vert),
           ) // vertical dots icon
         ],
-        backgroundColor: const Color.fromARGB(255, 243, 237, 237),
+        // backgroundColor: const Color.fromARGB(255, 243, 237, 237),
       ),
       body: FutureBuilder<List<FirstModel>>(
         future: input.readJson(contentLang),
