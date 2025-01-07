@@ -24,7 +24,7 @@ def jsonCombiner():
             merged_data[key].update(data)
 
     # Save the merged data into a new JSON file
-    with open('./assets/json/merged_file1.json', 'w', encoding="utf-8") as mf:
+    with open('./assets/json/merged_file.json', 'w', encoding="utf-8") as mf:
         json.dump(merged_data, mf, ensure_ascii=False, indent=4)
 
     print(f"Successfully merged {len(json_files)} JSON files into 'merged_file.json'")

@@ -30,7 +30,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  static String contentLang = "Kannada";
+  String contentLang = "Kannada";
   @override
   void initState() {
     // TODO: implement initState
@@ -41,7 +41,10 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ghranth'),
+        title: const Text(
+          ' ಗ್ರಂಥ ',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         actions: [
           Text("Choose Language "),
           PopupMenuButton<String>(
@@ -122,10 +125,10 @@ class _MyAppState extends State<MyApp> {
           },
           child: Card(
             elevation: 4,
-            margin: EdgeInsets.all(20.0),
+            margin: EdgeInsets.all(8.0),
             child: Container(
-              width: 60,
-              height: 60,
+              width: 300,
+              height: 300,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
