@@ -6,6 +6,7 @@ import 'package:stotram/data/data.dart' as input;
 
 import 'package:stotram/models/first_model.dart';
 import 'package:stotram/views/japamala.dart';
+import 'package:stotram/views/settings.dart';
 
 import 'models/second_model.dart';
 
@@ -13,7 +14,7 @@ import 'dart:io' show Platform;
 // Define the first model
 
 // Define the second model
-
+Color selectedColor = Color(0xFF228B22);
 void main() {
   // Load JSON data
   runApp(MaterialApp(
@@ -31,6 +32,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String contentLang = "Kannada";
+
   @override
   void initState() {
     // TODO: implement initState
@@ -39,6 +41,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    final List<String> languages = ['Marathi', 'Kannada'];
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -46,27 +49,95 @@ class _MyAppState extends State<MyApp> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [
-          Text("Choose Language "),
+          const Center(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                "Choose Language",
+                style: TextStyle(fontSize: 14),
+              ),
+            ),
+          ),
           PopupMenuButton<String>(
             onSelected: (String result) {
-              print("Selected: $result");
-              // Handle the selected option
               setState(() {
                 contentLang = result;
               });
             },
-            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-              const PopupMenuItem<String>(
-                value: 'Marathi',
-                child: Text('Marathi'),
-              ),
-              const PopupMenuItem<String>(
-                value: 'Kannada',
-                child: Text('Kannada'),
-              ),
-            ],
-            icon: Icon(Icons.more_vert),
-          ) // vertical dots icon
+            itemBuilder: (BuildContext context) {
+              return languages
+                  .where((lang) => lang != contentLang) // exclude current
+                  .map((lang) => PopupMenuItem<String>(
+                        value: lang,
+                        child: Text(lang),
+                      ))
+                  .toList();
+            },
+            icon: const Icon(Icons.more_vert),
+          ),
+          GestureDetector(
+            child: Icon(Icons.settings),
+            onTap: () async {
+              Color? picked = await showDialog<Color>(
+                context: context,
+                builder: (context) {
+                  Color tempColor = selectedColor;
+                  return AlertDialog(
+                    title: Text('Pick a color'),
+                    content: SingleChildScrollView(
+                      child: Wrap(
+                        spacing: 8,
+                        children: [
+                          Colors.black, // Black
+                          Color(0xFF000080), // Navy Blue
+                          Color(0xFF4169E1), // Royal Blue
+                          Color(0xFF006400), // Dark Green
+                          Color(0xFF800000), // Maroon / Burgundy
+                          Color(0xFF4B0082), // Deep Purple
+                          Color(0xFF36454F), // Charcoal Gray
+                          Color(0xFFDC143C), // Crimson
+                          Color(0xFF008B8B), // Dark Cyan / Teal
+                          Color(0xFF3F51B5), // Indigo
+                          Color(0xFF2F4F4F), // Dark Slate Gray
+                          Color(0xFF228B22), // Forest Green
+                          Color(0xFF0F52BA), // Sapphire Blue
+                          Color(
+                              0xFFFF8C00), // Dark Orange // Dark Orange // Charcoal Gray – subtle but strong readability
+                        ].map((color) {
+                          return GestureDetector(
+                            onTap: () {
+                              tempColor = color;
+                              Navigator.of(context).pop(color);
+                            },
+                            child: Container(
+                              width: 32,
+                              height: 32,
+                              margin: EdgeInsets.symmetric(vertical: 4),
+                              decoration: BoxDecoration(
+                                color: color,
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: tempColor == color
+                                      ? Colors.black
+                                      : Colors.transparent,
+                                  width: 3,
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  );
+                },
+              );
+              if (picked != null) {
+                setState(() {
+                  selectedColor = picked;
+                });
+              }
+            },
+          )
         ],
         // backgroundColor: const Color.fromARGB(255, 243, 237, 237),
       ),
@@ -222,8 +293,8 @@ class DetailPage extends StatefulWidget {
 
 class _DetailPageState extends State<DetailPage> {
   double _fontSize = 16.0; // Initial font size
-  final double _minFontSize = 12.0;
-  final double _maxFontSize = 130.0;
+  final double _minFontSize = 15.0;
+  final double _maxFontSize = 50.0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -235,7 +306,7 @@ class _DetailPageState extends State<DetailPage> {
         centerTitle: true,
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(18.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -250,7 +321,7 @@ class _DetailPageState extends State<DetailPage> {
             const SizedBox(height: 10),
             Expanded(
               child: Card(
-                color: Color.fromARGB(207, 0, 120, 212),
+                color: selectedColor,
                 child: SingleChildScrollView(
                   child: Center(
                     child: Padding(

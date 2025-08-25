@@ -6,7 +6,8 @@ import 'dart:convert';
 // Function to load and parse JSON
 Future<Map<String, dynamic>> loadJsonData() async {
   // Load JSON file as String
-  String jsonString = await rootBundle.loadString('assets/json/Main.json');
+  String jsonString =
+      await rootBundle.loadString('assets/json/merged_file.json');
 
   // Parse JSON string
   Map<String, dynamic> data = jsonDecode(jsonString);
