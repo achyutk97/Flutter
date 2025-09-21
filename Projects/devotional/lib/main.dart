@@ -1,12 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 import 'package:stotram/data/data.dart' as input;
 
 import 'package:stotram/models/first_model.dart';
-import 'package:stotram/views/japamala.dart';
-import 'package:stotram/views/settings.dart';
+import 'package:stotram/views/panchanga.dart';
 
 import 'models/second_model.dart';
 
@@ -14,7 +12,9 @@ import 'dart:io' show Platform;
 // Define the first model
 
 // Define the second model
-Color selectedColor = Color(0xFF228B22);
+Color selectedColor = Color(0xFF36454F);
+String contentLang = "Kannada";
+
 void main() {
   // Load JSON data
   runApp(MaterialApp(
@@ -160,11 +160,14 @@ class _MyAppState extends State<MyApp> {
           // print('Extended FAB Pressed');
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => Japamala()),
+            MaterialPageRoute(
+                builder: (context) => Panchanga(
+                      contentLang: contentLang,
+                    )),
           );
         },
         icon: Icon(Icons.add),
-        label: Text('Japamala'),
+        label: Text('Panghanga'),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
@@ -281,11 +284,12 @@ class DetailPage extends StatefulWidget {
   final String author;
   final String description;
 
-  const DetailPage(
-      {super.key,
-      required this.title,
-      required this.author,
-      required this.description});
+  const DetailPage({
+    super.key,
+    required this.title,
+    required this.author,
+    required this.description,
+  });
 
   @override
   State<DetailPage> createState() => _DetailPageState();
@@ -295,25 +299,28 @@ class _DetailPageState extends State<DetailPage> {
   double _fontSize = 16.0; // Initial font size
   final double _minFontSize = 15.0;
   final double _maxFontSize = 50.0;
+  double _scaleFactor = 1.0; // current zoom level
+  double _baseFontSize = 16.0; // stores initial font size during pinch
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
           widget.title,
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
       body: Padding(
-        padding: EdgeInsets.all(18.0),
+        padding: const EdgeInsets.all(18.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Center(
               child: Text(
-                '${widget.author}',
+                widget.author,
                 style:
                     const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
               ),
@@ -321,30 +328,31 @@ class _DetailPageState extends State<DetailPage> {
             const SizedBox(height: 10),
             Expanded(
               child: Card(
-                color: selectedColor,
+                color: selectedColor, // <-- define this globally
                 child: SingleChildScrollView(
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(18.0),
-                      child: Text(
-                        widget.description,
-                        style:
-                            TextStyle(fontSize: _fontSize, color: Colors.white),
+                  child: GestureDetector(
+                    onScaleStart: (details) {
+                      _baseFontSize = _fontSize;
+                    },
+                    onScaleUpdate: (details) {
+                      setState(() {
+                        _fontSize = (_baseFontSize * details.scale)
+                            .clamp(_minFontSize, _maxFontSize);
+                      });
+                    },
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(18.0),
+                        child: Text(
+                          widget.description,
+                          style: TextStyle(
+                              fontSize: _fontSize, color: Colors.white),
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-            Slider(
-              value: _fontSize,
-              min: _minFontSize,
-              max: _maxFontSize,
-              onChanged: (newValue) {
-                setState(() {
-                  _fontSize = newValue;
-                });
-              },
             ),
           ],
         ),

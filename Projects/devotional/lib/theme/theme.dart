@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 // import 'package:music_app/core/theme/app_pallete.dart';
 
 // class AppTheme {
