@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+// import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 // IMPORTANT: This file assumes you have added the 'intl' package to your pubspec.yaml file.
 // To fix the "intl" errors, please add the following line to your dependencies section
@@ -33,31 +34,61 @@ class _PanchangaState extends State<Panchanga> {
   @override
   void initState() {
     super.initState();
-    _panchangaDataFuture = fetchPanchangaData(_selectedDate);
+    _panchangaDataFuture = loadPanchangaFromAssets(_selectedDate);
   }
 
-  // Fetches Panchanga data for a given date
-  Future<Map<String, dynamic>> fetchPanchangaData(DateTime date) async {
-    final formattedDate = DateFormat('dd-MM-yyyy').format(date);
-    String queryLang = "en"; // Default to English
-    print("Content Language: ${widget.contentLang}");
-    if (widget.contentLang == "Kannada") {
-      queryLang = "ka";
-    } else if (widget.contentLang == "Marathi") {
-      queryLang = 'mr';
-    } else {
-      queryLang = "en";
-    }
-    final url = Uri.parse(
-        'http://192.168.1.5:8000/panchanga/$formattedDate?language=$queryLang');
-    final response = await http.get(url);
+  // // Fetches Panchanga data for a given date
+  // Future<Map<String, dynamic>> fetchPanchangaData(DateTime date) async {
+  //   final formattedDate = DateFormat('dd-MM-yyyy').format(date);
+  //   String queryLang = "en"; // Default to English
+  //   print("Content Language: ${widget.contentLang}");
+  //   if (widget.contentLang == "Kannada") {
+  //     queryLang = "ka";
+  //   } else if (widget.contentLang == "Marathi") {
+  //     queryLang = 'mr';
+  //   } else {
+  //     queryLang = "en";
+  //   }
+  //   final url = Uri.parse(
+  //       'http://192.168.1.5:8000/panchanga/$formattedDate?language=$queryLang');
+  //   final response = await http.get(url);
 
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> data = jsonDecode(response.body);
-      print(data); // For debugging
-      return data;
-    } else {
-      throw Exception('Failed to load Panchanga data for $formattedDate');
+  //   if (response.statusCode == 200) {
+  //     final Map<String, dynamic> data = jsonDecode(response.body);
+  //     print(data); // For debugging
+  //     return data;
+  //   } else {
+  //     throw Exception('Failed to load Panchanga data for $formattedDate');
+  //   }
+  // }
+
+  Future<Map<String, dynamic>> loadPanchangaFromAssets(DateTime date) async {
+    final dateKey = DateFormat('dd-MM-yyyy').format(date);
+
+    // Map contentLang → JSON key
+    String langKey = "en";
+    if (widget.contentLang == "Kannada") langKey = "ka";
+    if (widget.contentLang == "Marathi") langKey = "mr";
+
+    const assetPath = "assets/json/panchanga/december_2025.json";
+
+    try {
+      final jsonString = await rootBundle.loadString(assetPath);
+      final jsonData = jsonDecode(jsonString);
+
+      if (!jsonData.containsKey(langKey)) {
+        throw Exception("Language not available: $langKey");
+      }
+
+      final langData = jsonData[langKey];
+
+      if (!langData.containsKey(dateKey)) {
+        throw Exception("Date not found: $dateKey");
+      }
+
+      return {dateKey: langData[dateKey]};
+    } catch (e) {
+      throw Exception("Error loading Panchanga: $e");
     }
   }
 
@@ -73,7 +104,7 @@ class _PanchangaState extends State<Panchanga> {
       setState(() {
         _selectedDate = picked;
         // Trigger a new future for the FutureBuilder
-        _panchangaDataFuture = fetchPanchangaData(_selectedDate);
+        _panchangaDataFuture = loadPanchangaFromAssets(_selectedDate);
       });
     }
   }
@@ -82,7 +113,7 @@ class _PanchangaState extends State<Panchanga> {
   void _goToPreviousDay() {
     setState(() {
       _selectedDate = _selectedDate.subtract(const Duration(days: 1));
-      _panchangaDataFuture = fetchPanchangaData(_selectedDate);
+      _panchangaDataFuture = loadPanchangaFromAssets(_selectedDate);
     });
   }
 
@@ -90,7 +121,7 @@ class _PanchangaState extends State<Panchanga> {
   void _goToNextDay() {
     setState(() {
       _selectedDate = _selectedDate.add(const Duration(days: 1));
-      _panchangaDataFuture = fetchPanchangaData(_selectedDate);
+      _panchangaDataFuture = loadPanchangaFromAssets(_selectedDate);
     });
   }
 
