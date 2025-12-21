@@ -32,6 +32,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String contentLang = "Kannada";
+  bool loading = false;
 
   @override
   void initState() {
@@ -49,6 +50,27 @@ class _MyAppState extends State<MyApp> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [
+           IconButton(
+        icon: const Icon(Icons.refresh),
+        tooltip: "Force Refresh",
+        onPressed: () async {
+          try {
+            setState(() => loading = true);
+
+            await input.forceRefreshJson();
+
+            // Reload data
+            // jsonData = await input.loadJsonData();
+
+            setState(() => loading = false);
+          } catch (e) {
+            // setState(() {
+            //   loading = false;
+            //   error = e.toString();
+            // });
+          }
+        },
+      ),
           const Center(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 8.0),

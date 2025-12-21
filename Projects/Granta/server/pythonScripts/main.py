@@ -3,7 +3,7 @@ import json
 import sys
 import os
 
-FLUTTER_APPLICATION_DIR = r"C:\Users\achyu\OneDrive\Documents\workspace\Granta\client\grantha"
+FLUTTER_APPLICATION_DIR = r"C:\Users\achyu\OneDrive\Documents\workspace\Flutter\Projects\Granta\client\grantha"
 
 # Json Combiner
 def jsonCombiner():
