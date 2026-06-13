@@ -1,10 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:grantha/data/data.dart' as input;
 
 import 'package:grantha/models/first_model.dart';
 import 'package:grantha/views/panchanga.dart';
+import 'package:grantha/utils/app_prefs.dart';
 
 import 'models/second_model.dart';
 
@@ -12,17 +14,37 @@ import 'dart:io' show Platform;
 // Define the first model
 
 // Define the second model
-Color selectedColor = Color(0xFF4B0082);
+Color selectedColor = Color(0xFF000000);
 String contentLang = "Kannada";
+String? startupError = "Hello";
 
-void main() {
-  // Load JSON data
-  runApp(MaterialApp(
+void main()  {
+  // WidgetsFlutterBinding.ensureInitialized();
+
+  // try {
+  //   selectedColor = await AppPrefs.loadColor();
+  //   debugPrint("Loaded color: ${selectedColor.toARGB32()}");
+  // } catch (e, s) {
+  //   startupError = "PREF LOAD ERROR:\n$e\n\nSTACK:\n$s";
+  //   selectedColor = const Color(0xFFff5722); // default color in case of error
+  // }
+
+  runApp(const MyRootApp());
+}
+
+class MyRootApp extends StatelessWidget {
+  const MyRootApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
       title: 'Granta',
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
       themeMode: ThemeMode.system,
-      home: MyApp()));
+      home: MyApp(),
+    );
+  }
 }
 
 class MyApp extends StatefulWidget {
@@ -34,10 +56,31 @@ class _MyAppState extends State<MyApp> {
   String contentLang = "Kannada";
   bool loading = false;
 
+
+  Future<void> _loadColor() async {
+    try {
+      final color = await AppPrefs.loadColor();
+      setState(() {
+        selectedColor = color;
+      });
+    } catch (e) {
+      startupError = "PREF LOAD ERROR ON START:\n$e";
+      selectedColor = const Color.fromARGB(255, 52, 192, 83); // default color in case of error
+      // debugPrint("Pref load failed after start: $e");
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+     _loadColor();
+    ScaffoldMessenger.of(context).showSnackBar(
+  SnackBar(
+    content: Text(startupError!),
+    duration: const Duration(seconds: 5),
+  ),
+);
   }
 
   @override
@@ -157,6 +200,8 @@ class _MyAppState extends State<MyApp> {
                 setState(() {
                   selectedColor = picked;
                 });
+
+                await AppPrefs.saveColor(picked);
               }
             },
           )
@@ -199,8 +244,7 @@ class _MyAppState extends State<MyApp> {
     var data = snapshot;
     return GridView.builder(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount:
-            Platform.isAndroid ? 2 : 4, // Number of columns in the grid
+        crossAxisCount: Platform.isAndroid ? 2 : 4, // Number of columns in the grid
         crossAxisSpacing: 10, // Spacing between columns
         mainAxisSpacing: 10, // Spacing between rows
       ),

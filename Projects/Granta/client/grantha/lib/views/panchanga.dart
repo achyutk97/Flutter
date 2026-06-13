@@ -70,7 +70,7 @@ class _PanchangaState extends State<Panchanga> {
     if (widget.contentLang == "Kannada") langKey = "ka";
     if (widget.contentLang == "Marathi") langKey = "mr";
 
-    const assetPath = "assets/json/panchanga/december_2025.json";
+    const assetPath = "assets/json/panchanga/panchang_table_details.json";
 
     try {
       final jsonString = await rootBundle.loadString(assetPath);

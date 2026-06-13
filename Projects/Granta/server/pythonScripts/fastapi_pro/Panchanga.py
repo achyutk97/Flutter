@@ -46,8 +46,8 @@ def scrape_panchang_table(date, language):
 if __name__ == "__main__":
     from datetime import datetime, timedelta
 
-    start_date = datetime(2025, 12, 1)
-    end_date = datetime(2025, 12, 31)
+    start_date = datetime(2026, 1, 1)
+    end_date = datetime(2026, 1, 31)
 
     dates = []
     current = start_date

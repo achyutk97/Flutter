@@ -253,7 +253,7 @@ def MyPage(page1: ft.Page):
     t = ft.Text()
     b = ft.ElevatedButton(text="Submit", on_click=button_clicked)
     listOfData = [ft.dropdown.Option("Add new Record")]
-    
+
     for i in myDict['mainCategories']:
         GLOBAL_ID_COUNT += 1
         for k in i:
