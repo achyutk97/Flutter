@@ -18,7 +18,7 @@ Color selectedColor = Color(0xFF000000);
 String contentLang = "Kannada";
 String? startupError = "Hello";
 
-void main()  {
+void main() {
   // WidgetsFlutterBinding.ensureInitialized();
 
   // try {
@@ -42,12 +42,14 @@ class MyRootApp extends StatelessWidget {
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
       themeMode: ThemeMode.system,
-      home: MyApp(),
+      home: const MyApp(),
     );
   }
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -56,31 +58,44 @@ class _MyAppState extends State<MyApp> {
   String contentLang = "Kannada";
   bool loading = false;
 
-
   Future<void> _loadColor() async {
     try {
       final color = await AppPrefs.loadColor();
+
+      if (!mounted) return;
+
       setState(() {
         selectedColor = color;
+        startupError = null;
       });
     } catch (e) {
-      startupError = "PREF LOAD ERROR ON START:\n$e";
-      selectedColor = const Color.fromARGB(255, 52, 192, 83); // default color in case of error
-      // debugPrint("Pref load failed after start: $e");
+      if (!mounted) return;
+
+      setState(() {
+        startupError = "PREF LOAD ERROR:\n$e";
+        selectedColor = const Color.fromARGB(255, 52, 192, 83);
+      });
     }
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-     _loadColor();
-    ScaffoldMessenger.of(context).showSnackBar(
-  SnackBar(
-    content: Text(startupError!),
-    duration: const Duration(seconds: 5),
-  ),
-);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _loadColor();
+
+      if (!mounted) return;
+
+      if (startupError != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(startupError!),
+            duration: const Duration(seconds: 5),
+          ),
+        );
+      }
+    });
   }
 
   @override
@@ -93,34 +108,31 @@ class _MyAppState extends State<MyApp> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [
-           IconButton(
-        icon: const Icon(Icons.refresh),
-        tooltip: "Force Refresh",
-        onPressed: () async {
-          try {
-            setState(() => loading = true);
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            tooltip: "Force Refresh",
+            onPressed: () async {
+              try {
+                setState(() => loading = true);
 
-            await input.forceRefreshJson();
+                await input.forceRefreshJson();
 
-            // Reload data
-            // jsonData = await input.loadJsonData();
+                // Reload data
+                // jsonData = await input.loadJsonData();
 
-            setState(() => loading = false);
-          } catch (e) {
-            // setState(() {
-            //   loading = false;
-            //   error = e.toString();
-            // });
-          }
-        },
-      ),
+                setState(() => loading = false);
+              } catch (e) {
+                // setState(() {
+                //   loading = false;
+                //   error = e.toString();
+                // });
+              }
+            },
+          ),
           const Center(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 8.0),
-              child: Text(
-                "Choose Language",
-                style: TextStyle(fontSize: 14),
-              ),
+              child: Text("Choose Language", style: TextStyle(fontSize: 14)),
             ),
           ),
           PopupMenuButton<String>(
@@ -132,10 +144,10 @@ class _MyAppState extends State<MyApp> {
             itemBuilder: (BuildContext context) {
               return languages
                   .where((lang) => lang != contentLang) // exclude current
-                  .map((lang) => PopupMenuItem<String>(
-                        value: lang,
-                        child: Text(lang),
-                      ))
+                  .map(
+                    (lang) =>
+                        PopupMenuItem<String>(value: lang, child: Text(lang)),
+                  )
                   .toList();
             },
             icon: const Icon(Icons.more_vert),
@@ -152,45 +164,47 @@ class _MyAppState extends State<MyApp> {
                     content: SingleChildScrollView(
                       child: Wrap(
                         spacing: 8,
-                        children: [
-                          Colors.black, // Black
-                          Color(0xFF000080), // Navy Blue
-                          Color(0xFF4169E1), // Royal Blue
-                          Color(0xFF006400), // Dark Green
-                          Color(0xFF800000), // Maroon / Burgundy
-                          Color(0xFF4B0082), // Deep Purple
-                          Color(0xFF36454F), // Charcoal Gray
-                          Color(0xFFDC143C), // Crimson
-                          Color(0xFF008B8B), // Dark Cyan / Teal
-                          Color(0xFF3F51B5), // Indigo
-                          Color(0xFF2F4F4F), // Dark Slate Gray
-                          Color(0xFF228B22), // Forest Green
-                          Color(0xFF0F52BA), // Sapphire Blue
-                          Color(
-                              0xFFFF8C00), // Dark Orange // Dark Orange // Charcoal Gray – subtle but strong readability
-                        ].map((color) {
-                          return GestureDetector(
-                            onTap: () {
-                              tempColor = color;
-                              Navigator.of(context).pop(color);
-                            },
-                            child: Container(
-                              width: 32,
-                              height: 32,
-                              margin: EdgeInsets.symmetric(vertical: 4),
-                              decoration: BoxDecoration(
-                                color: color,
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: tempColor == color
-                                      ? Colors.black
-                                      : Colors.transparent,
-                                  width: 3,
+                        children:
+                            [
+                              Colors.black, // Black
+                              Color(0xFF000080), // Navy Blue
+                              Color(0xFF4169E1), // Royal Blue
+                              Color(0xFF006400), // Dark Green
+                              Color(0xFF800000), // Maroon / Burgundy
+                              Color(0xFF4B0082), // Deep Purple
+                              Color(0xFF36454F), // Charcoal Gray
+                              Color(0xFFDC143C), // Crimson
+                              Color(0xFF008B8B), // Dark Cyan / Teal
+                              Color(0xFF3F51B5), // Indigo
+                              Color(0xFF2F4F4F), // Dark Slate Gray
+                              Color(0xFF228B22), // Forest Green
+                              Color(0xFF0F52BA), // Sapphire Blue
+                              Color(
+                                0xFFFF8C00,
+                              ), // Dark Orange // Dark Orange // Charcoal Gray – subtle but strong readability
+                            ].map((color) {
+                              return GestureDetector(
+                                onTap: () {
+                                  tempColor = color;
+                                  Navigator.of(context).pop(color);
+                                },
+                                child: Container(
+                                  width: 32,
+                                  height: 32,
+                                  margin: EdgeInsets.symmetric(vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: color,
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: tempColor == color
+                                          ? Colors.black
+                                          : Colors.transparent,
+                                      width: 3,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          );
-                        }).toList(),
+                              );
+                            }).toList(),
                       ),
                     ),
                   );
@@ -204,7 +218,7 @@ class _MyAppState extends State<MyApp> {
                 await AppPrefs.saveColor(picked);
               }
             },
-          )
+          ),
         ],
         // backgroundColor: const Color.fromARGB(255, 243, 237, 237),
       ),
@@ -212,15 +226,22 @@ class _MyAppState extends State<MyApp> {
         future: input.readJson(contentLang),
         builder:
             (BuildContext context, AsyncSnapshot<List<FirstModel>> snapshot) {
-          if (snapshot.data == []) {
-            return const CircularProgressIndicator(
-              color: Colors.red,
-            );
-          } else {
-            List<FirstModel> nonNullableList1 = snapshot.data ?? [];
-            return GridView1(nonNullableList1);
-          }
-        },
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              if (snapshot.hasError) {
+                return Center(child: Text(snapshot.error.toString()));
+              }
+
+              final data = snapshot.data ?? [];
+
+              if (data.isEmpty) {
+                return const Center(child: Text("No data available"));
+              }
+
+              return GridView1(data);
+            },
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
@@ -228,9 +249,8 @@ class _MyAppState extends State<MyApp> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => Panchanga(
-                      contentLang: contentLang,
-                    )),
+              builder: (context) => Panchanga(contentLang: contentLang),
+            ),
           );
         },
         icon: Icon(Icons.add),
@@ -244,7 +264,9 @@ class _MyAppState extends State<MyApp> {
     var data = snapshot;
     return GridView.builder(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: Platform.isAndroid ? 2 : 4, // Number of columns in the grid
+        crossAxisCount: Platform.isAndroid
+            ? 2
+            : 4, // Number of columns in the grid
         crossAxisSpacing: 10, // Spacing between columns
         mainAxisSpacing: 10, // Spacing between rows
       ),
@@ -286,7 +308,9 @@ class _MyAppState extends State<MyApp> {
                     child: Text(
                       data[index].name,
                       style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold),
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                       textAlign: TextAlign.center,
                       maxLines: 1,
                     ),
@@ -305,15 +329,16 @@ class SecondModelPage extends StatelessWidget {
   final String title;
   final List<SecondModel> secondModels;
 
-  const SecondModelPage(
-      {super.key, required this.secondModels, required this.title});
+  const SecondModelPage({
+    super.key,
+    required this.secondModels,
+    required this.title,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-      ),
+      appBar: AppBar(title: Text(title)),
       body: ListView.builder(
         itemCount: secondModels.length,
         itemBuilder: (context, index) {
@@ -387,8 +412,10 @@ class _DetailPageState extends State<DetailPage> {
             Center(
               child: Text(
                 widget.author,
-                style:
-                    const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
             const SizedBox(height: 10),
@@ -402,8 +429,10 @@ class _DetailPageState extends State<DetailPage> {
                     },
                     onScaleUpdate: (details) {
                       setState(() {
-                        _fontSize = (_baseFontSize * details.scale)
-                            .clamp(_minFontSize, _maxFontSize);
+                        _fontSize = (_baseFontSize * details.scale).clamp(
+                          _minFontSize,
+                          _maxFontSize,
+                        );
                       });
                     },
                     child: Center(
@@ -412,7 +441,9 @@ class _DetailPageState extends State<DetailPage> {
                         child: Text(
                           widget.description,
                           style: TextStyle(
-                              fontSize: _fontSize, color: Colors.white),
+                            fontSize: _fontSize,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),

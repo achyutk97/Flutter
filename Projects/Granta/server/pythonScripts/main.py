@@ -3,7 +3,7 @@ import json
 import sys
 import os
 
-FLUTTER_APPLICATION_DIR = r"C:\Users\achyu\OneDrive\Documents\workspace\Flutter\Projects\Granta\client\grantha"
+FLUTTER_APPLICATION_DIR = r"/home/tanuja/workspace/Flutter/Projects/Granta/client/grantha/"
 
 # Json Combiner
 def jsonCombiner():
@@ -152,7 +152,7 @@ def MyPage(page1: ft.Page):
                         min_lines=1,
                         max_lines=5,
                     )
-                    submitButton = ft.ElevatedButton(text="Submit", on_click=submitCategpories)
+                    submitButton = ft.Button("Submit", on_click=submitCategpories)
                     page.controls.extend([name1, author, description, submitButton])
                     page1.update()
                 elif yesNo.value == "Modify":
@@ -244,14 +244,14 @@ def MyPage(page1: ft.Page):
                 width=100,
                 options=listOfData
             )
-            submitButton = ft.ElevatedButton(text="Submit", on_click=submitClicked)
+            submitButton = ft.Button("Submit", on_click=submitClicked)
             page.controls.extend([name, image, yesNo, submitButton])
             page1.update()
             
 
     myDict = readingTheJsonData()
     t = ft.Text()
-    b = ft.ElevatedButton(text="Submit", on_click=button_clicked)
+    b = ft.Button("Submit", on_click=button_clicked)
     listOfData = [ft.dropdown.Option("Add new Record")]
 
     for i in myDict['mainCategories']:
@@ -281,4 +281,4 @@ def main(Page):
 
 
 # jsonCombiner()
-ft.app(target=main)
+ft.run(main)
